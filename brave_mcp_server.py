@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 """
 Brave Search MCP Server - Eenvoudige implementatie
 
@@ -15,9 +16,22 @@ Gebruik:
 """
 
 import os
-import json
-import requests
-from flask import Flask, request, jsonify
+import sys
+
+# Controleer op vereiste modules voor een betere foutmelding
+try:
+    import json
+    import requests
+    from flask import Flask, request, jsonify
+except ImportError as e:
+    module_name = str(e).split("'")[-2]
+    print(f"ERROR: De benodigde module '{module_name}' is niet geïnstalleerd.")
+    print("\nInstalleer de vereiste pakketten met:")
+    print("    pip install -r requirements.txt")
+    print("\nOf installeer specifiek de ontbrekende module:")
+    print(f"    pip install {module_name}")
+    print("\nZie README.md voor gedetailleerde installatie-instructies.")
+    sys.exit(1)
 
 app = Flask(__name__)
 
@@ -28,6 +42,7 @@ BRAVE_SEARCH_URL = "https://api.search.brave.com/res/v1/search"
 
 if not BRAVE_API_KEY:
     print("WAARSCHUWING: BRAVE_API_KEY is niet ingesteld. De server zal niet correct werken.")
+    print("Voeg BRAVE_API_KEY toe aan je omgevingsvariabelen of .env bestand.")
 
 @app.route("/", methods=["GET"])
 def home():
@@ -110,4 +125,9 @@ def mcp_query():
 if __name__ == "__main__":
     print(f"Starting Brave Search MCP Server on port {PORT}")
     print(f"API Key present: {bool(BRAVE_API_KEY)}")
-    app.run(host="0.0.0.0", port=PORT)
+    try:
+        app.run(host="0.0.0.0", port=PORT)
+    except Exception as e:
+        print(f"ERROR: {str(e)}")
+        print("\nZie README.md voor installatie- en troubleshooting-instructies.")
+        sys.exit(1)
