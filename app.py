@@ -1,28 +1,85 @@
-from flask import Flask, render_template, request, redirect, url_for
-import requests, subprocess, os
+#!/usr/bin/env python3
+"""
+Flask MCP-integratie Applicatie
+
+Deze Flask-applicatie integreert LLM-modellen (OpenAI en Anthropic) met MCP-servers
+voor het verrijken van prompts met context uit externe bronnen.
+"""
+
+import os
+import sys
 import json
+import subprocess
 
-# API keys importeren (in productie via os.getenv)
-# Gebruik deze variabelen om je API-sleutels in te stellen of stel ze in als omgevingsvariabelen
-# openai.api_key = os.getenv("OPENAI_API_KEY")
-# anthropic_api_key = os.getenv("ANTHROPIC_API_KEY")
+# Probeer .env bestand te laden indien beschikbaar
+try:
+    from dotenv import load_dotenv
+    load_dotenv()  # Laad .env bestand als het bestaat
+    env_loaded = True
+except ImportError:
+    env_loaded = False
+    print("OPMERKING: python-dotenv niet geïnstalleerd. .env bestand zal niet worden geladen.")
+    print("Gebruik 'pip install python-dotenv' om .env bestandsondersteuning toe te voegen.")
 
+# Controleer Flask-afhankelijkheid
+try:
+    from flask import Flask, render_template, request, redirect, url_for
+except ImportError:
+    print("ERROR: Flask is niet geïnstalleerd. Dit is een vereiste afhankelijkheid.")
+    print("\nInstalleer met:")
+    print("    pip install -r requirements.txt")
+    print("\nOf installeer Flask afzonderlijk:")
+    print("    pip install flask\n")
+    print("Zie README.md voor gedetailleerde installatie-instructies.")
+    sys.exit(1)
+
+# Controleer requests-afhankelijkheid
+try:
+    import requests
+except ImportError:
+    print("ERROR: requests is niet geïnstalleerd. Dit is een vereiste afhankelijkheid.")
+    print("\nInstalleer met:")
+    print("    pip install -r requirements.txt")
+    print("\nOf installeer requests afzonderlijk:")
+    print("    pip install requests\n")
+    print("Zie README.md voor gedetailleerde installatie-instructies.")
+    sys.exit(1)
+
+# Probeer OpenAI te importeren
 try:
     import openai
     openai_available = True
     openai.api_key = os.getenv("OPENAI_API_KEY")
+    if not openai.api_key:
+        print("WAARSCHUWING: OPENAI_API_KEY is niet ingesteld. OpenAI-model zal niet correct werken.")
+        if not env_loaded:
+            print("Overweeg om een .env bestand te maken of gebruik omgevingsvariabelen.")
 except ImportError:
     openai_available = False
-    print("OpenAI package not installed. OpenAI model will not be available.")
+    print("OpenAI package is niet geïnstalleerd. OpenAI-model zal niet beschikbaar zijn.")
+    print("Installeer met: pip install openai")
 
+# Probeer Anthropic te importeren
 try:
     import anthropic
     anthropic_available = True
     anthropic_api_key = os.getenv("ANTHROPIC_API_KEY")
-    claude_client = anthropic.Anthropic(api_key=anthropic_api_key) if anthropic_api_key else None
+    if not anthropic_api_key:
+        print("WAARSCHUWING: ANTHROPIC_API_KEY is niet ingesteld. Claude-model zal niet correct werken.")
+        if not env_loaded:
+            print("Overweeg om een .env bestand te maken of gebruik omgevingsvariabelen.")
+    else:
+        # Probeer de Anthropic client aan te maken
+        try:
+            claude_client = anthropic.Anthropic(api_key=anthropic_api_key)
+        except Exception as e:
+            print(f"Fout bij het aanmaken van Anthropic client: {e}")
+            claude_client = None
+            anthropic_available = False
 except ImportError:
     anthropic_available = False
-    print("Anthropic package not installed. Claude model will not be available.")
+    print("Anthropic package is niet geïnstalleerd. Claude-model zal niet beschikbaar zijn.")
+    print("Installeer met: pip install anthropic")
 
 app = Flask(__name__)
 
@@ -38,11 +95,13 @@ processes = {}
 MCP_SERVERS = {
     "brave": {
         "command": ["python", "brave_mcp_server.py"],
-        "env": {"BRAVE_API_KEY": os.getenv("BRAVE_API_KEY", "")}
+        "env": {"BRAVE_API_KEY": os.getenv("BRAVE_API_KEY", "")},
+        "port": 5001
     },
     "github": {
         "command": ["python", "github_mcp_server.py"],
-        "env": {"GITHUB_TOKEN": os.getenv("GITHUB_TOKEN", "")}
+        "env": {"GITHUB_TOKEN": os.getenv("GITHUB_TOKEN", "")},
+        "port": 5002
     }
 }
 
@@ -58,7 +117,14 @@ def start_mcp_server(name):
         processes[name] = proc
         return True
     except Exception as e:
-        print(f"Failed to start {name}: {e}")
+        error_message = str(e)
+        print(f"Fout bij het starten van {name}: {error_message}")
+        
+        # Controleer op veelvoorkomende fouten en geef duidelijke meldingen
+        if "No such file or directory" in error_message:
+            print(f"Zorg ervoor dat {cfg['command'][1]} bestaat in de huidige map.")
+        elif "Permission denied" in error_message:
+            print(f"Zorg ervoor dat {cfg['command'][1]} uitvoerbare permissies heeft.")
         return False
 
 def stop_mcp_server(name):
@@ -66,13 +132,18 @@ def stop_mcp_server(name):
     proc = processes.get(name)
     if not proc:
         return False
-    proc.terminate()
     try:
-        proc.wait(timeout=5)
-    except:
-        proc.kill()
-    processes.pop(name, None)
-    return True
+        proc.terminate()
+        try:
+            proc.wait(timeout=5)
+        except subprocess.TimeoutExpired:
+            proc.kill()
+            proc.wait(timeout=2)
+        processes.pop(name, None)
+        return True
+    except Exception as e:
+        print(f"Fout bij het stoppen van {name}: {e}")
+        return False
 
 def get_tool_context(user_prompt):
     """Maakt gebruik van actieve MCP-tools om extra context te vergaren voor de prompt."""
@@ -93,8 +164,10 @@ def get_tool_context(user_prompt):
                         desc = top.get("description") or top.get("text") or ""
                         url = top.get("url", "")
                         context_parts.append(f"Brave zoekresultaat: {top.get('title')}. {desc} [Bron: {url}]")
+                else:
+                    print(f"Brave Search API fout: {res.status_code} - {res.text}")
             except Exception as e:
-                print(f"Error querying Brave Search: {e}")
+                print(f"Fout bij het bevragen van Brave Search: {e}")
     
     # GitHub context
     if "github" in processes:
@@ -120,8 +193,10 @@ def get_tool_context(user_prompt):
                         f"URL: {repo.get('html_url')}\n"
                         f"Stars: {repo.get('stargazers_count')}, Forks: {repo.get('forks_count')}"
                     )
+            else:
+                print(f"GitHub API fout: {res.status_code} - {res.text}")
         except Exception as e:
-            print(f"Error querying GitHub: {e}")
+            print(f"Fout bij het bevragen van GitHub: {e}")
     
     # Combineer alle contextdelen
     context = "\n\n".join(context_parts)
@@ -132,6 +207,9 @@ def get_tool_context(user_prompt):
 def query_llm(model_choice, prompt_text):
     """Stuurt de prompt naar het gekozen LLM-model en geeft het antwoord terug."""
     if model_choice == "openai" and openai_available:
+        if not openai.api_key:
+            return "OpenAI API-sleutel niet geconfigureerd. Stel de OPENAI_API_KEY omgevingsvariabele in."
+        
         try:
             resp = openai.ChatCompletion.create(
                 model="gpt-3.5-turbo",
@@ -139,11 +217,17 @@ def query_llm(model_choice, prompt_text):
             )
             return resp["choices"][0]["message"]["content"]
         except Exception as e:
-            return f"Fout bij OpenAI API aanroep: {str(e)}"
+            error_msg = f"Fout bij OpenAI API aanroep: {str(e)}"
+            print(error_msg)
+            return error_msg
     
     elif model_choice == "anthropic" and anthropic_available:
+        if not anthropic_api_key:
+            return "Anthropic API-sleutel niet geconfigureerd. Stel de ANTHROPIC_API_KEY omgevingsvariabele in."
+        
         if not claude_client:
-            return "Anthropic API key niet geconfigureerd."
+            return "Claude client kon niet worden geïnitialiseerd."
+        
         try:
             # Update voor nieuwere versies van de Anthropic SDK
             message = claude_client.messages.create(
@@ -164,9 +248,13 @@ def query_llm(model_choice, prompt_text):
                 )
                 return resp.completion
             except Exception as e:
-                return f"Fout bij Anthropic API aanroep (oudere SDK): {str(e)}"
+                error_msg = f"Fout bij Anthropic API aanroep (oudere SDK): {str(e)}"
+                print(error_msg)
+                return error_msg
         except Exception as e:
-            return f"Fout bij Anthropic API aanroep: {str(e)}"
+            error_msg = f"Fout bij Anthropic API aanroep: {str(e)}"
+            print(error_msg)
+            return error_msg
     
     else:
         return "Ongeldig model of API client niet beschikbaar."
@@ -218,4 +306,14 @@ def stop_tool(tool):
     return redirect(url_for("index"))
 
 if __name__ == "__main__":
+    if not MODEL_OPTIONS:
+        print("\nWAARSCHUWING: Geen LLM-modellen beschikbaar. Installeer openai en/of anthropic packages.")
+        print("Gebruik 'pip install openai anthropic' om beide te installeren.\n")
+    
+    if not os.getenv("BRAVE_API_KEY"):
+        print("OPMERKING: BRAVE_API_KEY is niet ingesteld. Brave Search MCP-server zal niet correct werken.")
+    
+    print("Flask MCP-integratie Applicatie wordt gestart...")
+    print(f"Beschikbare modellen: {', '.join(MODEL_OPTIONS.values()) if MODEL_OPTIONS else 'Geen'}")
+    print("Open http://localhost:5000 in je browser om de interface te gebruiken.")
     app.run(debug=True)
