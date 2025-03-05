@@ -20,10 +20,6 @@ Deze Flask-webapplicatie stelt gebruikers in staat om:
 ### Vereisten
 
 - Python 3.7 of hoger
-- Flask
-- Requests
-- OpenAI Python package (optioneel, voor GPT-toegang)
-- Anthropic Python package (optioneel, voor Claude-toegang)
 
 ### Stappen
 
@@ -34,9 +30,25 @@ Deze Flask-webapplicatie stelt gebruikers in staat om:
    cd MCP_FLASK
    ```
 
-2. **Installeer de vereiste pakketten**
+2. **Maak een virtuele omgeving aan (aanbevolen)**
 
    ```bash
+   # Windows
+   python -m venv venv
+   venv\Scripts\activate
+   
+   # macOS/Linux
+   python3 -m venv venv
+   source venv/bin/activate
+   ```
+
+3. **Installeer de vereiste pakketten**
+
+   ```bash
+   # Aanbevolen: installeer alle afhankelijkheden via requirements.txt
+   pip install -r requirements.txt
+   
+   # Alternatief: installeer alleen de specifieke pakketten die je nodig hebt
    pip install flask requests
    
    # Voor OpenAI model-toegang
@@ -44,10 +56,31 @@ Deze Flask-webapplicatie stelt gebruikers in staat om:
    
    # Voor Anthropic model-toegang
    pip install anthropic
+   
+   # Voor .env bestandsondersteuning
+   pip install python-dotenv
    ```
 
-3. **Configureer de API-sleutels**
+4. **Configureer de API-sleutels**
 
+   Je kunt API-sleutels configureren via omgevingsvariabelen of een .env bestand.
+
+   **Optie 1: Maak een .env bestand**
+   
+   Kopieer het .env.example bestand en pas het aan:
+   
+   ```bash
+   # Windows
+   copy .env.example .env
+   
+   # macOS/Linux
+   cp .env.example .env
+   ```
+   
+   Bewerk vervolgens het .env bestand en vul je API-sleutels in.
+
+   **Optie 2: Stel omgevingsvariabelen in**
+   
    Stel de volgende omgevingsvariabelen in:
 
    - `OPENAI_API_KEY`: Je OpenAI API-sleutel (voor GPT-modellen)
@@ -110,6 +143,23 @@ De applicatie gebruikt twee MCP-servers die automatisch gestart kunnen worden va
 - **GitHub MCP-server**: Draait op poort 5002 en biedt GitHub-zoekfunctionaliteit
 
 Wanneer deze servers actief zijn, wordt de context van deze tools automatisch toegevoegd aan je prompts.
+
+## Problemen oplossen
+
+### ModuleNotFoundError: No module named 'flask'
+
+Als je deze fout ziet wanneer je de applicatie of MCP-servers probeert te starten, betekent dit dat Flask niet is geïnstalleerd in je huidige Python-omgeving. Zorg ervoor dat:
+
+1. Je de requirements.txt hebt geïnstalleerd: `pip install -r requirements.txt`
+2. Je de virtuele omgeving hebt geactiveerd (als je die gebruikt)
+3. Je de commando's uitvoert vanuit de hoofdmap van het project
+
+### Andere package-gerelateerde fouten
+
+Als je andere ModuleNotFoundError-meldingen ziet, controleer dan of:
+- Alle packages zijn geïnstalleerd via `pip install -r requirements.txt`
+- Je Python-omgeving correct is ingesteld
+- Je geen oudere of incompatibele versies van packages hebt geïnstalleerd
 
 ## Model Context Protocol (MCP)
 
