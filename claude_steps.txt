@@ -62,13 +62,21 @@
    - Toevoeging van .env bestandsondersteuning via dotenv
    - Verbeterde gebruikerservaring bij problemen
 
-3. **Flask ImportError in virtuele omgeving** (Issue #6 / PR #7) ⌛
+3. **Flask ImportError in virtuele omgeving** (Issue #6 / PR #7) ✓
    - Verbeterde subprocess-aanroepen met sys.executable
    - Uitgebreide virtuele omgeving troubleshooting sectie in README.md
    - Nieuw manage_mcp_servers.py hulpscript voor serverbeheer
    - Uitgebreide foutdiagnostiek voor Python-omgevingsproblemen
 
+4. **Socket Error in Brave Search MCP Server** (Issue #8 / PR #9) ⌛
+   - Gefixt socket error (WinError 10038) bij het starten van de Brave MCP Server
+   - Verbeterd foutregistratiesysteem met centrale log_error functie
+   - Threaded=False ingesteld in Flask app.run() configuratie
+   - Host gewijzigd van "0.0.0.0" naar "127.0.0.1" voor betere compatibiliteit
+   - Specifieke foutafhandeling en probleemoplossingstips toegevoegd
+   - Dotenv-ondersteuning toegevoegd voor betere configuratiebeheer
+
 ## Huidige status
-PR #7 is geopend voor het oplossen van Issue #6 (Flask ImportError in virtuele omgeving). Na goedkeuring van deze PR kan issue #1 worden aangepakt om de foutafhandeling verder te verbeteren.
+PR #9 is geopend voor het oplossen van Issue #8 (Socket Error in Brave Search MCP Server). Na goedkeuring van deze PR kan issue #1 worden aangepakt om de foutafhandeling verder te verbeteren.
 
 De bovenstaande must-haves zijn noodzakelijk voor de basiswerking en veiligheid van de applicatie, terwijl de nice-to-haves de gebruikerservaring en functionaliteit kunnen verbeteren maar niet essentieel zijn voor de kernfunctionaliteit.
