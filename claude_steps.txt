@@ -2,7 +2,7 @@
 
 ## Must-haves (Essentiële functionaliteiten)
 
-1. **Foutafhandeling verbeteren**
+1. **Foutafhandeling verbeteren** (Issue #1)
    - Implementeer robuustere foutafhandeling in de hoofdapplicatie en MCP-servers
    - Voeg gebruikersvriendelijke foutmeldingen toe voor API-sleutelproblemen
    - Verbeter logboekregistratie voor betere debugging
@@ -55,12 +55,20 @@
 
 ## Bugfixes en Optimalisaties
 
-1. **Prestatie-optimalisatie**
+1. **Anthropic API compatibiliteit** (Issue #2 / PR #3)
+   - Bijgewerkt van oude Client()-instantiatie naar nieuwe Anthropic()-instantiatie
+   - Toegevoegd ondersteuning voor nieuwere messages.create() API-formaat
+   - Toegevoegd fallback voor oudere SDK-versies
+
+2. **Prestatie-optimalisatie**
    - Verbeter responstijden door caching en asynchrone verwerking
    - Optimaliseer de verwerkingspijplijn voor context-verzameling
 
-2. **Browser-compatibiliteit**
+3. **Browser-compatibiliteit**
    - Test en optimaliseer voor verschillende browsers
    - Verbeter mobiele compatibiliteit
+
+## Huidige status
+Momenteel is er een PR (#3) geopend voor het oplossen van de Anthropic API-compatibiliteitsproblemen. Na goedkeuring van deze PR kan issue #1 worden aangepakt om de foutafhandeling te verbeteren.
 
 De bovenstaande must-haves zijn noodzakelijk voor de basiswerking en veiligheid van de applicatie, terwijl de nice-to-haves de gebruikerservaring en functionaliteit kunnen verbeteren maar niet essentieel zijn voor de kernfunctionaliteit.
