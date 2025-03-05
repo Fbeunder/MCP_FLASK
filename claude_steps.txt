@@ -1,0 +1,66 @@
+# Volgende Ontwikkelstappen voor MCP_Flask
+
+## Must-haves (Essentiële functionaliteiten)
+
+1. **Foutafhandeling verbeteren**
+   - Implementeer robuustere foutafhandeling in de hoofdapplicatie en MCP-servers
+   - Voeg gebruikersvriendelijke foutmeldingen toe voor API-sleutelproblemen
+   - Verbeter logboekregistratie voor betere debugging
+
+2. **Beveiliging verbeteren**
+   - Implementeer CSRF-bescherming voor formulieren
+   - Voeg rate limiting toe voor API-verzoeken
+   - Valideer gebruikersinvoer beter voordat deze wordt verwerkt
+
+3. **Ondersteuning voor .env bestand**
+   - Implementeer functies voor het laden van omgevingsvariabelen uit een .env bestand
+   - Maak configuratie eenvoudiger voor gebruikers
+
+4. **Gezamenlijke MCP-servercontrole**
+   - Maak een gezamenlijk beheersysteem voor MCP-servers (starten/stoppen)
+   - Verbeter procesbeheer en voeg health checks toe
+
+## Nice-to-haves (Nuttige verbeteringen)
+
+1. **Geschiedenis van gesprekken**
+   - Implementeer een systeem om eerdere prompts en antwoorden op te slaan
+   - Maak het mogelijk voor gebruikers om hun gespreksgeschiedenis te bekijken
+
+2. **Meer LLM-modellen ondersteunen**
+   - Voeg ondersteuning toe voor meer LLM-modellen zoals Gemini, Llama, etc.
+   - Maak het selecteren van specifieke modelversies mogelijk
+
+3. **Contextreferentie uitbreiden**
+   - Voeg meer MCP-tools toe (zoals Wikipedia, nieuws, etc.)
+   - Verbeter contextverrijking met betere samenvatting en relevantiefiltering
+
+4. **UI/UX verbeteringen**
+   - Verbeter de gebruikersinterface met responsive design
+   - Voeg donkere modus toe
+   - Implementeer betere laadstatussen en voortgangsindicaties
+
+5. **Prompt templates en opslag**
+   - Voeg de mogelijkheid toe om prompt-templates op te slaan en te hergebruiken
+   - Implementeer een systeem om favoriete prompts te bewaren
+
+6. **Markdown en codeblok ondersteuning**
+   - Voeg ondersteuning toe voor markdown-rendering in antwoorden
+   - Implementeer syntaxiskleuring voor codeblokken
+
+7. **Exporteren van antwoorden**
+   - Voeg mogelijkheden toe om antwoorden te exporteren naar verschillende formaten (PDF, Markdown, etc.)
+
+8. **Real-time streaming van antwoorden**
+   - Implementeer streaming voor antwoorden van LLM's
+
+## Bugfixes en Optimalisaties
+
+1. **Prestatie-optimalisatie**
+   - Verbeter responstijden door caching en asynchrone verwerking
+   - Optimaliseer de verwerkingspijplijn voor context-verzameling
+
+2. **Browser-compatibiliteit**
+   - Test en optimaliseer voor verschillende browsers
+   - Verbeter mobiele compatibiliteit
+
+De bovenstaande must-haves zijn noodzakelijk voor de basiswerking en veiligheid van de applicatie, terwijl de nice-to-haves de gebruikerservaring en functionaliteit kunnen verbeteren maar niet essentieel zijn voor de kernfunctionaliteit.
