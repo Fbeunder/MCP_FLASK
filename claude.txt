@@ -7,7 +7,7 @@ Deze applicatie is een Flask-webapplicatie die gebruikers in staat stelt om met 
 De applicatie is opgebouwd uit de volgende modules:
 
 ### 1. Hoofdapplicatie
-- Status: Functioneel (met bug-fix PR #3 voor Anthropic API) 
+- Status: Functioneel met verbeterde foutafhandeling en dotenv-ondersteuning
 - Bestandsnaam: app.py
 - Functionaliteit: 
   - Beheert de web interface en routing
@@ -15,30 +15,34 @@ De applicatie is opgebouwd uit de volgende modules:
   - Beheert de opstarten/afsluiten van MCP-servers
   - Verrijkt prompts met context uit MCP-servers
   - Ondersteunt zowel nieuwere als oudere versies van Anthropic API
+  - Biedt robuuste foutafhandeling voor ontbrekende modules of API-sleutels
+  - Ondersteunt .env bestandsconfiguratie via dotenv
 - Afhankelijkheden: 
-  - Flask, requests, openai, anthropic
+  - Flask, requests, openai, anthropic, python-dotenv
   - brave_mcp_server.py, github_mcp_server.py
 
 ### 2. Brave Search MCP-server
-- Status: Functioneel
+- Status: Functioneel met verbeterde foutafhandeling
 - Bestandsnaam: brave_mcp_server.py
 - Functionaliteit:
   - Implementeert een HTTP-server die verzoeken ontvangt en verwerkt
   - Communiceert met de Brave Search API
   - Functioneert als een MCP-compatibele zoekdienst
+  - Biedt duidelijke foutmeldingen bij ontbrekende afhankelijkheden
 - Afhankelijkheden:
   - Flask, requests
-  - BRAVE_API_KEY in omgevingsvariabelen
+  - BRAVE_API_KEY in omgevingsvariabelen of .env bestand
 
 ### 3. GitHub MCP-server
-- Status: Functioneel
+- Status: Functioneel met verbeterde foutafhandeling
 - Bestandsnaam: github_mcp_server.py
 - Functionaliteit:
   - Implementeert een HTTP-server voor GitHub API-interacties
   - Biedt MCP-compatibele endpoints voor repository-zoeken en code-zoeken
+  - Biedt duidelijke foutmeldingen bij ontbrekende afhankelijkheden
 - Afhankelijkheden:
   - Flask, requests
-  - Optioneel: GITHUB_TOKEN in omgevingsvariabelen
+  - Optioneel: GITHUB_TOKEN in omgevingsvariabelen of .env bestand
 
 ### 4. Webinterface
 - Status: Functioneel
@@ -52,18 +56,21 @@ De applicatie is opgebouwd uit de volgende modules:
   - HTML, CSS, JavaScript
 
 ### 5. Configuratie
-- Status: Beschikbaar als voorbeeld
+- Status: Beschikbaar als voorbeeld met dotenv-ondersteuning
 - Bestandsnaam: .env.example
 - Functionaliteit:
   - Dient als sjabloon voor API-sleutelconfiguratie
+  - Ondersteunt dotenv-functionaliteit voor eenvoudige configuratie
 - Afhankelijkheden:
   - python-dotenv
 
 ### 6. Projectdocumentatie
-- Status: Beschikbaar
+- Status: Bijgewerkt met verbeterde installatie-instructies
 - Bestandsnaam: README.md
 - Functionaliteit:
   - Beschrijft projectfunctionaliteiten en installatie/gebruiksinstructies
+  - Bevat gedetailleerde installatie-instructies met virtuele omgeving
+  - Bevat troubleshooting-informatie voor veelvoorkomende problemen
 - Afhankelijkheden: Geen
 
 ### 7. Dependentiemanagement
