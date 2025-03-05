@@ -1,0 +1,73 @@
+# Projectoverzicht: Flask MCP-integratie Applicatie
+
+Deze applicatie is een Flask-webapplicatie die gebruikers in staat stelt om met LLM-modellen (OpenAI en Anthropic) te communiceren via een eenvoudige webinterface. De applicatie verrijkt gebruikersprompts met contextinformatie door gebruik te maken van Model Context Protocol (MCP)-servers voor Brave Search en GitHub.
+
+## Architectuur: Modulestructuur
+
+De applicatie is opgebouwd uit de volgende modules:
+
+### 1. Hoofdapplicatie
+- Status: Functioneel
+- Bestandsnaam: app.py
+- Functionaliteit: 
+  - Beheert de web interface en routing
+  - Verwerkt gebruikersinvoer en versturen naar LLM-modellen
+  - Beheert de opstarten/afsluiten van MCP-servers
+  - Verrijkt prompts met context uit MCP-servers
+- Afhankelijkheden: 
+  - Flask, requests, openai, anthropic
+  - brave_mcp_server.py, github_mcp_server.py
+
+### 2. Brave Search MCP-server
+- Status: Functioneel
+- Bestandsnaam: brave_mcp_server.py
+- Functionaliteit:
+  - Implementeert een HTTP-server die verzoeken ontvangt en verwerkt
+  - Communiceert met de Brave Search API
+  - Functioneert als een MCP-compatibele zoekdienst
+- Afhankelijkheden:
+  - Flask, requests
+  - BRAVE_API_KEY in omgevingsvariabelen
+
+### 3. GitHub MCP-server
+- Status: Functioneel
+- Bestandsnaam: github_mcp_server.py
+- Functionaliteit:
+  - Implementeert een HTTP-server voor GitHub API-interacties
+  - Biedt MCP-compatibele endpoints voor repository-zoeken en code-zoeken
+- Afhankelijkheden:
+  - Flask, requests
+  - Optioneel: GITHUB_TOKEN in omgevingsvariabelen
+
+### 4. Webinterface
+- Status: Functioneel
+- Bestandsnaam: templates/index.html
+- Functionaliteit:
+  - Biedt gebruikersvriendelijke interface voor LLM-interactie
+  - Geeft mogelijkheden voor modelselectie en promptinvoer
+  - Beheer van MCP-tools (starten/stoppen)
+  - Tonen van antwoorden en volledige prompts met context
+- Afhankelijkheden:
+  - HTML, CSS, JavaScript
+
+### 5. Configuratie
+- Status: Beschikbaar als voorbeeld
+- Bestandsnaam: .env.example
+- Functionaliteit:
+  - Dient als sjabloon voor API-sleutelconfiguratie
+- Afhankelijkheden:
+  - python-dotenv
+
+### 6. Projectdocumentatie
+- Status: Beschikbaar
+- Bestandsnaam: README.md
+- Functionaliteit:
+  - Beschrijft projectfunctionaliteiten en installatie/gebruiksinstructies
+- Afhankelijkheden: Geen
+
+### 7. Dependentiemanagement
+- Status: Beschikbaar
+- Bestandsnaam: requirements.txt
+- Functionaliteit:
+  - Definieert de benodigde Python-pakketten voor de applicatie
+- Afhankelijkheden: Geen
