@@ -7,13 +7,14 @@ Deze applicatie is een Flask-webapplicatie die gebruikers in staat stelt om met 
 De applicatie is opgebouwd uit de volgende modules:
 
 ### 1. Hoofdapplicatie
-- Status: Functioneel
+- Status: Functioneel (met bug-fix PR #3 voor Anthropic API) 
 - Bestandsnaam: app.py
 - Functionaliteit: 
   - Beheert de web interface en routing
   - Verwerkt gebruikersinvoer en versturen naar LLM-modellen
   - Beheert de opstarten/afsluiten van MCP-servers
   - Verrijkt prompts met context uit MCP-servers
+  - Ondersteunt zowel nieuwere als oudere versies van Anthropic API
 - Afhankelijkheden: 
   - Flask, requests, openai, anthropic
   - brave_mcp_server.py, github_mcp_server.py
