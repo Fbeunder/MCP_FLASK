@@ -12,10 +12,6 @@
    - Voeg rate limiting toe voor API-verzoeken
    - Valideer gebruikersinvoer beter voordat deze wordt verwerkt
 
-3. **Gezamenlijke MCP-servercontrole**
-   - Maak een gezamenlijk beheersysteem voor MCP-servers (starten/stoppen)
-   - Verbeter procesbeheer en voeg health checks toe
-
 ## Nice-to-haves (Nuttige verbeteringen)
 
 1. **Geschiedenis van gesprekken**
@@ -49,6 +45,10 @@
 8. **Real-time streaming van antwoorden**
    - Implementeer streaming voor antwoorden van LLM's
 
+9. **MCP-server beheerinterface**
+   - Voeg een gedetailleerde webinterface toe voor het beheren van MCP-servers
+   - Maak het mogelijk om serverstatussen en logs te bekijken
+
 ## Afgeronde Taken en Bug Fixes
 
 1. **Anthropic API compatibiliteit** (Issue #2 / PR #3) ✓
@@ -56,13 +56,19 @@
    - Toegevoegd ondersteuning voor nieuwere messages.create() API-formaat
    - Toegevoegd fallback voor oudere SDK-versies
 
-2. **Module-foutmelding bij MCP-servers** (Issue #4 / PR #5) ⌛
+2. **Module-foutmelding bij MCP-servers** (Issue #4 / PR #5) ✓
    - Verbeterde foutafhandeling voor ontbrekende modules
    - Duidelijkere instructies in README.md voor installatie
    - Toevoeging van .env bestandsondersteuning via dotenv
    - Verbeterde gebruikerservaring bij problemen
 
+3. **Flask ImportError in virtuele omgeving** (Issue #6 / PR #7) ⌛
+   - Verbeterde subprocess-aanroepen met sys.executable
+   - Uitgebreide virtuele omgeving troubleshooting sectie in README.md
+   - Nieuw manage_mcp_servers.py hulpscript voor serverbeheer
+   - Uitgebreide foutdiagnostiek voor Python-omgevingsproblemen
+
 ## Huidige status
-PR #5 is geopend voor het oplossen van Issue #4 (Module not found error). Na goedkeuring van deze PR kan issue #1 worden aangepakt om de foutafhandeling verder te verbeteren.
+PR #7 is geopend voor het oplossen van Issue #6 (Flask ImportError in virtuele omgeving). Na goedkeuring van deze PR kan issue #1 worden aangepakt om de foutafhandeling verder te verbeteren.
 
 De bovenstaande must-haves zijn noodzakelijk voor de basiswerking en veiligheid van de applicatie, terwijl de nice-to-haves de gebruikerservaring en functionaliteit kunnen verbeteren maar niet essentieel zijn voor de kernfunctionaliteit.
