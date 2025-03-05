@@ -11,6 +11,9 @@ import sys
 import json
 import subprocess
 
+# Haal het huidige Python executable path op voor subprocessen
+PYTHON_EXECUTABLE = sys.executable
+
 # Probeer .env bestand te laden indien beschikbaar
 try:
     from dotenv import load_dotenv
@@ -94,12 +97,12 @@ if anthropic_available:
 processes = {}
 MCP_SERVERS = {
     "brave": {
-        "command": ["python", "brave_mcp_server.py"],
+        "command": [PYTHON_EXECUTABLE, "brave_mcp_server.py"],
         "env": {"BRAVE_API_KEY": os.getenv("BRAVE_API_KEY", "")},
         "port": 5001
     },
     "github": {
-        "command": ["python", "github_mcp_server.py"],
+        "command": [PYTHON_EXECUTABLE, "github_mcp_server.py"],
         "env": {"GITHUB_TOKEN": os.getenv("GITHUB_TOKEN", "")},
         "port": 5002
     }
@@ -113,7 +116,15 @@ def start_mcp_server(name):
     if not cfg:
         return False
     try:
-        proc = subprocess.Popen(cfg["command"], env={**os.environ, **cfg["env"]})
+        # Zorg ervoor dat we hetzelfde Python-executable gebruiken
+        # en kopieer de huidige PYTHONPATH om site-packages te vinden
+        env = {**os.environ, **cfg["env"]}
+        
+        # Geef informatie over het gestarte proces
+        python_path = cfg["command"][0]
+        print(f"MCP server '{name}' starten met Python: {python_path}")
+        
+        proc = subprocess.Popen(cfg["command"], env=env)
         processes[name] = proc
         return True
     except Exception as e:
@@ -125,6 +136,14 @@ def start_mcp_server(name):
             print(f"Zorg ervoor dat {cfg['command'][1]} bestaat in de huidige map.")
         elif "Permission denied" in error_message:
             print(f"Zorg ervoor dat {cfg['command'][1]} uitvoerbare permissies heeft.")
+        
+        # Voeg virtuele omgeving troubleshooting toe
+        print("\nTroubleshooting voor virtuele omgevingen:")
+        print(f"- Huidige Python: {sys.executable}")
+        print(f"- Gebruikt voor MCP server: {cfg['command'][0]}")
+        print("- Controleer of Flask correct is geïnstalleerd in de actieve Python-omgeving")
+        print("- Als u een virtuele omgeving gebruikt, zorg dat deze is geactiveerd")
+        print("- Voer 'pip install -r requirements.txt' uit om alle vereiste packages te installeren")
         return False
 
 def stop_mcp_server(name):
@@ -314,6 +333,7 @@ if __name__ == "__main__":
         print("OPMERKING: BRAVE_API_KEY is niet ingesteld. Brave Search MCP-server zal niet correct werken.")
     
     print("Flask MCP-integratie Applicatie wordt gestart...")
+    print(f"Actieve Python omgeving: {sys.executable}")
     print(f"Beschikbare modellen: {', '.join(MODEL_OPTIONS.values()) if MODEL_OPTIONS else 'Geen'}")
     print("Open http://localhost:5000 in je browser om de interface te gebruiken.")
     app.run(debug=True)
