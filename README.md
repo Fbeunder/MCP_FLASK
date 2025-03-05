@@ -146,13 +146,100 @@ Wanneer deze servers actief zijn, wordt de context van deze tools automatisch to
 
 ## Problemen oplossen
 
+### Virtuele omgeving problemen
+
+Als je een foutmelding krijgt over ontbrekende modules (zoals Flask) terwijl je zeker weet dat deze zijn geïnstalleerd, kan dit te maken hebben met problemen met virtuele omgevingen. Hier zijn enkele stappen om dit op te lossen:
+
+#### Windows virtuele omgeving problemen
+
+1. **Controleer of de virtuele omgeving is geactiveerd**:
+   
+   Je moet de virtuele omgeving activeren in elke nieuwe terminal-sessie:
+   ```bash
+   venv\Scripts\activate
+   ```
+   
+   Je zou `(venv)` aan het begin van je command prompt moeten zien.
+
+2. **Controleer welke Python-executable wordt gebruikt**:
+   
+   ```bash
+   where python
+   ```
+   
+   Het eerste pad moet wijzen naar de python.exe in je virtuele omgeving (bijv. `\path\to\project\venv\Scripts\python.exe`).
+
+3. **Problemen met subprocess in Windows**:
+   
+   De laatste versie van de applicatie gebruikt nu automatisch dezelfde Python-executable voor het starten van MCP-servers als de hoofdapplicatie, wat problemen met virtuele omgevingen voorkomt.
+
+#### Linux/macOS virtuele omgeving problemen
+
+1. **Controleer of de virtuele omgeving is geactiveerd**:
+   
+   ```bash
+   source venv/bin/activate
+   ```
+   
+   Je zou `(venv)` aan het begin van je command prompt moeten zien.
+
+2. **Controleer welke Python-executable wordt gebruikt**:
+   
+   ```bash
+   which python
+   ```
+   
+   Het pad moet wijzen naar de python in je virtuele omgeving (bijv. `/path/to/project/venv/bin/python`).
+
 ### ModuleNotFoundError: No module named 'flask'
 
-Als je deze fout ziet wanneer je de applicatie of MCP-servers probeert te starten, betekent dit dat Flask niet is geïnstalleerd in je huidige Python-omgeving. Zorg ervoor dat:
+Als je deze fout nog steeds ziet wanneer je de applicatie of MCP-servers probeert te starten, probeer dan het volgende:
 
-1. Je de requirements.txt hebt geïnstalleerd: `pip install -r requirements.txt`
-2. Je de virtuele omgeving hebt geactiveerd (als je die gebruikt)
-3. Je de commando's uitvoert vanuit de hoofdmap van het project
+1. **Controleer de installatie**:
+   ```bash
+   pip list | grep flask
+   ```
+   
+   Je zou Flask in de lijst moeten zien.
+
+2. **Herinstalleer Flask**:
+   ```bash
+   pip uninstall flask
+   pip install flask
+   ```
+
+3. **Gebruik absolute paden voor het uitvoeren**:
+   ```bash
+   # Vind het volledige pad naar Python in je virtuele omgeving
+   # Windows
+   echo %VIRTUAL_ENV%\Scripts\python.exe
+   
+   # Linux/macOS
+   echo $VIRTUAL_ENV/bin/python
+   
+   # Gebruik dit pad om de applicatie te starten
+   /volledig/pad/naar/venv/bin/python app.py
+   ```
+
+4. **Controleer PYTHONPATH**:
+   
+   In sommige gevallen kan de PYTHONPATH omgevingsvariabele verstoord raken:
+   ```bash
+   # Windows
+   echo %PYTHONPATH%
+   
+   # Linux/macOS
+   echo $PYTHONPATH
+   ```
+   
+   Als het een waarde heeft die niet zinvol is voor je project, overweeg om het tijdelijk te wissen:
+   ```bash
+   # Windows
+   set PYTHONPATH=
+   
+   # Linux/macOS
+   unset PYTHONPATH
+   ```
 
 ### Andere package-gerelateerde fouten
 
