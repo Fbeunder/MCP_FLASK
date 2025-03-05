@@ -19,7 +19,7 @@ try:
     import anthropic
     anthropic_available = True
     anthropic_api_key = os.getenv("ANTHROPIC_API_KEY")
-    claude_client = anthropic.Client(api_key=anthropic_api_key) if anthropic_api_key else None
+    claude_client = anthropic.Anthropic(api_key=anthropic_api_key) if anthropic_api_key else None
 except ImportError:
     anthropic_available = False
     print("Anthropic package not installed. Claude model will not be available.")
@@ -145,12 +145,26 @@ def query_llm(model_choice, prompt_text):
         if not claude_client:
             return "Anthropic API key niet geconfigureerd."
         try:
-            resp = claude_client.completion(
-                prompt=f"{anthropic.HUMAN_PROMPT} {prompt_text} {anthropic.AI_PROMPT}",
+            # Update voor nieuwere versies van de Anthropic SDK
+            message = claude_client.messages.create(
                 model="claude-2",
-                max_tokens_to_sample=1000
+                max_tokens=1000,
+                messages=[
+                    {"role": "user", "content": prompt_text}
+                ]
             )
-            return resp.get("completion", "")
+            return message.content[0].text
+        except AttributeError:
+            # Fallback voor oudere versies van de Anthropic SDK
+            try:
+                resp = claude_client.completions.create(
+                    prompt=f"{anthropic.HUMAN_PROMPT} {prompt_text} {anthropic.AI_PROMPT}",
+                    model="claude-2",
+                    max_tokens_to_sample=1000
+                )
+                return resp.completion
+            except Exception as e:
+                return f"Fout bij Anthropic API aanroep (oudere SDK): {str(e)}"
         except Exception as e:
             return f"Fout bij Anthropic API aanroep: {str(e)}"
     
