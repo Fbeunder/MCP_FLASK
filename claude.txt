@@ -22,15 +22,18 @@ De applicatie is opgebouwd uit de volgende modules:
   - brave_mcp_server.py, github_mcp_server.py
 
 ### 2. Brave Search MCP-server
-- Status: Functioneel met verbeterde foutafhandeling
+- Status: Functioneel met verbeterde foutafhandeling en socket error fix
 - Bestandsnaam: brave_mcp_server.py
 - Functionaliteit:
   - Implementeert een HTTP-server die verzoeken ontvangt en verwerkt
   - Communiceert met de Brave Search API
   - Functioneert als een MCP-compatibele zoekdienst
   - Biedt duidelijke foutmeldingen bij ontbrekende afhankelijkheden
+  - Centraal foutregistratiesysteem met log_error functie
+  - Specifieke foutafhandeling voor socket error 10038
+  - Configuratie aangepast voor betere compatibiliteit (threaded=False)
 - Afhankelijkheden:
-  - Flask, requests
+  - Flask, requests, python-dotenv (optioneel)
   - BRAVE_API_KEY in omgevingsvariabelen of .env bestand
 
 ### 3. GitHub MCP-server
