@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 """
 GitHub MCP Server - Eenvoudige implementatie
 
@@ -16,9 +17,22 @@ Gebruik:
 """
 
 import os
-import json
-import requests
-from flask import Flask, request, jsonify
+import sys
+
+# Controleer op vereiste modules voor een betere foutmelding
+try:
+    import json
+    import requests
+    from flask import Flask, request, jsonify
+except ImportError as e:
+    module_name = str(e).split("'")[-2]
+    print(f"ERROR: De benodigde module '{module_name}' is niet geïnstalleerd.")
+    print("\nInstalleer de vereiste pakketten met:")
+    print("    pip install -r requirements.txt")
+    print("\nOf installeer specifiek de ontbrekende module:")
+    print(f"    pip install {module_name}")
+    print("\nZie README.md voor gedetailleerde installatie-instructies.")
+    sys.exit(1)
 
 app = Flask(__name__)
 
@@ -26,6 +40,10 @@ app = Flask(__name__)
 PORT = 5002
 GITHUB_TOKEN = os.getenv("GITHUB_TOKEN")  # Optioneel maar aanbevolen
 GITHUB_API_URL = "https://api.github.com"
+
+if not GITHUB_TOKEN:
+    print("OPMERKING: GITHUB_TOKEN is niet ingesteld. De API-limieten zullen beperkt zijn.")
+    print("Voeg GITHUB_TOKEN toe aan je omgevingsvariabelen of .env bestand voor hogere limieten.")
 
 @app.route("/", methods=["GET"])
 def home():
@@ -181,4 +199,9 @@ def mcp_query():
 if __name__ == "__main__":
     print(f"Starting GitHub MCP Server on port {PORT}")
     print(f"GitHub Token present: {bool(GITHUB_TOKEN)}")
-    app.run(host="0.0.0.0", port=PORT)
+    try:
+        app.run(host="0.0.0.0", port=PORT)
+    except Exception as e:
+        print(f"ERROR: {str(e)}")
+        print("\nZie README.md voor installatie- en troubleshooting-instructies.")
+        sys.exit(1)
