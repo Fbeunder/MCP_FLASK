@@ -12,11 +12,7 @@
    - Voeg rate limiting toe voor API-verzoeken
    - Valideer gebruikersinvoer beter voordat deze wordt verwerkt
 
-3. **Ondersteuning voor .env bestand**
-   - Implementeer functies voor het laden van omgevingsvariabelen uit een .env bestand
-   - Maak configuratie eenvoudiger voor gebruikers
-
-4. **Gezamenlijke MCP-servercontrole**
+3. **Gezamenlijke MCP-servercontrole**
    - Maak een gezamenlijk beheersysteem voor MCP-servers (starten/stoppen)
    - Verbeter procesbeheer en voeg health checks toe
 
@@ -53,22 +49,20 @@
 8. **Real-time streaming van antwoorden**
    - Implementeer streaming voor antwoorden van LLM's
 
-## Bugfixes en Optimalisaties
+## Afgeronde Taken en Bug Fixes
 
-1. **Anthropic API compatibiliteit** (Issue #2 / PR #3)
+1. **Anthropic API compatibiliteit** (Issue #2 / PR #3) ✓
    - Bijgewerkt van oude Client()-instantiatie naar nieuwe Anthropic()-instantiatie
    - Toegevoegd ondersteuning voor nieuwere messages.create() API-formaat
    - Toegevoegd fallback voor oudere SDK-versies
 
-2. **Prestatie-optimalisatie**
-   - Verbeter responstijden door caching en asynchrone verwerking
-   - Optimaliseer de verwerkingspijplijn voor context-verzameling
-
-3. **Browser-compatibiliteit**
-   - Test en optimaliseer voor verschillende browsers
-   - Verbeter mobiele compatibiliteit
+2. **Module-foutmelding bij MCP-servers** (Issue #4 / PR #5) ⌛
+   - Verbeterde foutafhandeling voor ontbrekende modules
+   - Duidelijkere instructies in README.md voor installatie
+   - Toevoeging van .env bestandsondersteuning via dotenv
+   - Verbeterde gebruikerservaring bij problemen
 
 ## Huidige status
-Momenteel is er een PR (#3) geopend voor het oplossen van de Anthropic API-compatibiliteitsproblemen. Na goedkeuring van deze PR kan issue #1 worden aangepakt om de foutafhandeling te verbeteren.
+PR #5 is geopend voor het oplossen van Issue #4 (Module not found error). Na goedkeuring van deze PR kan issue #1 worden aangepakt om de foutafhandeling verder te verbeteren.
 
 De bovenstaande must-haves zijn noodzakelijk voor de basiswerking en veiligheid van de applicatie, terwijl de nice-to-haves de gebruikerservaring en functionaliteit kunnen verbeteren maar niet essentieel zijn voor de kernfunctionaliteit.
