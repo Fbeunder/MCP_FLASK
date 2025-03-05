@@ -44,7 +44,20 @@ De applicatie is opgebouwd uit de volgende modules:
   - Flask, requests
   - Optioneel: GITHUB_TOKEN in omgevingsvariabelen of .env bestand
 
-### 4. Webinterface
+### 4. MCP-server Beheertool
+- Status: Nieuw toegevoegd
+- Bestandsnaam: manage_mcp_servers.py
+- Functionaliteit:
+  - Biedt command-line interface voor beheer van MCP-servers
+  - Ondersteunt starten, stoppen en statuscontrole van servers
+  - Handhaaft processen tussen applicatie-herstart
+  - Gebruikt dezelfde Python-interpreter als de hoofdapplicatie
+  - Bevat uitgebreide diagnostiek voor virtuele omgevingen
+- Afhankelijkheden:
+  - requests
+  - Hetzelfde Python-executable als de hoofdapplicatie
+
+### 5. Webinterface
 - Status: Functioneel
 - Bestandsnaam: templates/index.html
 - Functionaliteit:
@@ -55,7 +68,7 @@ De applicatie is opgebouwd uit de volgende modules:
 - Afhankelijkheden:
   - HTML, CSS, JavaScript
 
-### 5. Configuratie
+### 6. Configuratie
 - Status: Beschikbaar als voorbeeld met dotenv-ondersteuning
 - Bestandsnaam: .env.example
 - Functionaliteit:
@@ -64,16 +77,17 @@ De applicatie is opgebouwd uit de volgende modules:
 - Afhankelijkheden:
   - python-dotenv
 
-### 6. Projectdocumentatie
-- Status: Bijgewerkt met verbeterde installatie-instructies
+### 7. Projectdocumentatie
+- Status: Bijgewerkt met uitgebreide virtuele omgeving troubleshooting
 - Bestandsnaam: README.md
 - Functionaliteit:
   - Beschrijft projectfunctionaliteiten en installatie/gebruiksinstructies
   - Bevat gedetailleerde installatie-instructies met virtuele omgeving
   - Bevat troubleshooting-informatie voor veelvoorkomende problemen
+  - Uitgebreide sectie over virtuele omgeving problemen oplossen
 - Afhankelijkheden: Geen
 
-### 7. Dependentiemanagement
+### 8. Dependentiemanagement
 - Status: Beschikbaar
 - Bestandsnaam: requirements.txt
 - Functionaliteit:
